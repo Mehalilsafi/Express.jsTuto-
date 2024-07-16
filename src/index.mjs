@@ -4,24 +4,37 @@ const port = process.env.port || 3000;
 app.get("/", (request, response) => {
   response.send("hello woorld ");
 });
+const usersArray = [
+  {
+    id: 1,
+    name: "safi",
+    work: "freelance",
+  },
+  {
+    id: 2,
+    name: "noor",
+    work: "dev",
+  },
+];
 app.get("/api/users", (request, response) => {
-  response.status("201").send([
-    {
-      id: 1,
-      name: "safi",
-      work: "freelance",
-    },
-    {
-      id: 2,
-      name: "noor",
-      work: "dev",
-    },
-  ]);
+  response.status("201").send(usersArray);
+});
+app.get("/api/users/:id", (request, response) => {
+  const paresedInt = parseInt(request.params.id);
+  if(isNaN(paresedInt)){
+    response.status(400).send("bad request")
+  }
+  const dynamicUser=usersArray.find((user)=> user.id === paresedInt)
+  if(!dynamicUser){
+    return response.status(404).send("not found bad request")
+  }else{
+    return response.send(dynamicUser)
+  }
 });
 
-app.get("/api/products",(request,response)=>{
-response.send([{id:1,name:'chicken'}])
-})
+app.get("/api/products", (request, response) => {
+  response.send([{ id: 1, name: "chicken" }]);
+});
 
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
