@@ -60,7 +60,7 @@ app.get("/api/users/:id", (request, response) => {
   }
 });
 
-//put request 
+//put request
 app.patch("/api/users/:id", (request, response) => {
   const {
     body,
@@ -70,14 +70,34 @@ app.patch("/api/users/:id", (request, response) => {
   if (isNaN(parsedId)) {
     response.status(404).send("bad request ");
   }
-  const findIndexUser=usersArray.findIndex((user)=> user.id === parsedId)
-  if(findIndexUser === -1){
-    response.status(404)
+  const findIndexUser = usersArray.findIndex((user) => user.id === parsedId);
+  if (findIndexUser === -1) {
+    response.status(404);
   }
-  //override the usersArray[findIndexUser] with ...body request 
-  usersArray[findIndexUser]={...usersArray[findIndexUser],...body}
+  //override the usersArray[findIndexUser] with ...body request
+  usersArray[findIndexUser] = { ...usersArray[findIndexUser], ...body };
   return response.status(200).send(usersArray[findIndexUser]);
 });
+
+//delete
+app.delete("/api/users/:id", (request, response) => {
+  const {
+    params: { id },
+  } = request;
+  const parsedId = parseInt(id);
+  if (isNaN(parsedId)) {
+    response.status(404).send("bad request ");
+  }
+
+  const userIndex = usersArray.findIndex((user) => user.id === parsedId);
+  if (userIndex === -1) {
+    return response.status(404).send("User Not Found");
+  }
+
+  const deletedUser = usersArray.splice(userIndex, 1)[0];
+  return response.status(200).send(deletedUser);
+});
+
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });
