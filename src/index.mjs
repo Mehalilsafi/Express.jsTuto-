@@ -61,7 +61,7 @@ app.get("/api/users/:id", (request, response) => {
 });
 
 //put request 
-app.put("/api/users/:id", (request, response) => {
+app.patch("/api/users/:id", (request, response) => {
   const {
     body,
     params: { id },
@@ -74,8 +74,9 @@ app.put("/api/users/:id", (request, response) => {
   if(findIndexUser === -1){
     response.status(404)
   }
-  usersArray[findIndexUser]={id:parsedId,...body}
-  return response.status(200)
+  //override the usersArray[findIndexUser] with ...body request 
+  usersArray[findIndexUser]={...usersArray[findIndexUser],...body}
+  return response.status(200).send(usersArray[findIndexUser]);
 });
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
