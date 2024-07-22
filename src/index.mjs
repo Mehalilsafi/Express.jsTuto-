@@ -19,6 +19,13 @@ const usersArray = [
   },
 ];
 
+
+const loggingMiddleware=(request,response,next)=>{
+  console.log(`${request.method} -- ${request.url}`)
+  next();
+
+}
+app.use(loggingMiddleware) 
 //query paremters
 app.get("/api/users", (request, response) => {
   console.log(request.query);
