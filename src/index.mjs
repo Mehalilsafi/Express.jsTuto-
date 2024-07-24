@@ -1,5 +1,5 @@
 import express, { request, response } from "express";
-import { query, validationResult } from "express-validator";
+import { query, validationResult, matchedData, body } from "express-validator";
 const app = express();
 const port = process.env.port || 3000;
 app.use(express.json());
@@ -44,16 +44,13 @@ app.use(loggingMiddleware);
 app.get(
   "/api/users",
   [
-    //query take the query paramters 
-    query('filter')
-    .optional()
-    .isString()
-    .isLength({ min: 3, max: 10 })
-    .withMessage("Filter must be a string between 3 and 10 characters"),
-  query('value')
-    .optional()
-    .isString()
-    .withMessage("Value must be a string"),
+    //query take the query paramters
+    query("filter")
+      .optional()
+      .isString()
+      .isLength({ min: 3, max: 10 })
+      .withMessage("Filter must be a string between 3 and 10 characters"),
+    query("value").optional().isString().withMessage("Value must be a string"),
   ],
   (request, response) => {
     console.log(request.body);
@@ -76,17 +73,30 @@ app.get(
 );
 
 // post requests
-app.post("/api/users", (request, response) => {
-  const { body } = request;
-  const newId =
-    usersArray.length > 0 ? usersArray[usersArray.length - 1].id + 1 : 1;
-  const newUser = {
-    id: newId,
-    ...body,
-  };
-  usersArray.push(newUser);
-  response.status(201).send(usersArray);
-});
+app.post(
+  "/api/users",
+  body("name")
+    .isString()
+    .withMessage("must be a string ")
+    .isEmpty()
+    .withMessage("must not be Empty "),
+  (request, response) => {
+    const error = validationResult(request);
+    if (!error.isEmpty()) {
+      return response.status(400).send({ errors: error.array });
+    }
+    const data = matchedData(request);
+
+    const newId =
+      usersArray.length > 0 ? usersArray[usersArray.length - 1].id + 1 : 1;
+    const newUser = {
+      id: newId,
+      ...data,
+    };
+    usersArray.push(newUser);
+    response.status(201).send(usersArray);
+  }
+);
 
 //rout params
 app.get("/api/users/:id", (request, response) => {
