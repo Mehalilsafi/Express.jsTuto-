@@ -1,6 +1,6 @@
 import { usersArray } from "./constants.mjs";
 
-const idReslover = (request, response, next) => {
+const idResolver  = (request, response, next) => {
     const {
       params: { id },
     } = request;
@@ -19,4 +19,4 @@ const idReslover = (request, response, next) => {
     console.log(`${request.method} -- ${request.url}`);
     next();
   };
-  export {idReslover}
+  export {idResolver}

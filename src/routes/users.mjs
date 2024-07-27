@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { usersArray } from "../utils/constants.mjs";
-import { idReslover } from "../utils/middlewares.mjs";
-import express, { request, response } from "express";
+import { idResolver } from "../utils/middlewares.mjs";
 import { query, validationResult, matchedData, body } from "express-validator";
 const router = Router();
 
@@ -40,15 +39,22 @@ router.get(
 // post requests
 router.post(
   "/api/users",
-  body("name")
-    .isString()
-    .withMessage("must be a string ")
-    .isEmpty()
-    .withMessage("must not be Empty "),
+  [
+    body("name")
+      .isString()
+      .withMessage("must be a string")
+      .notEmpty()
+      .withMessage("must not be empty"),
+    body("work")
+      .isString()
+      .withMessage("must be a string")
+      .notEmpty()
+      .withMessage("must not be empty"),
+  ],
   (request, response) => {
-    const error = validationResult(request);
-    if (!error.isEmpty()) {
-      return response.status(400).send({ errors: error.array });
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(400).send({ errors: errors.array() });
     }
     const data = matchedData(request);
 
@@ -62,7 +68,6 @@ router.post(
     response.status(201).send(usersArray);
   }
 );
-
 router.get("/api/users/:id", (request, response) => {
   const paresedInt = parseInt(request.params.id);
   if (isNaN(paresedInt)) {
@@ -77,7 +82,7 @@ router.get("/api/users/:id", (request, response) => {
 });
 
 //put request
-router.patch("/api/users/:id", idReslover, (request, response) => {
+router.patch("/api/users/:id", idResolver, (request, response) => {
   console.log(request.body);
   const { body, findIndexUser } = request;
   //override the usersArray[findIndexUser] with ...body request
@@ -86,7 +91,7 @@ router.patch("/api/users/:id", idReslover, (request, response) => {
 });
 
 //delete
-router.delete("/api/users/:id", idReslover, (request, response) => {
+router.delete("/api/users/:id", idResolver, (request, response) => {
   const { findIndexUser } = request;
 
   const userIndex = findIndexUser;
@@ -94,5 +99,4 @@ router.delete("/api/users/:id", idReslover, (request, response) => {
   return response.status(200).send(deletedUser);
 });
 
-
-export default router
+export default router;
