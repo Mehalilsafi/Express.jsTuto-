@@ -1,3 +1,5 @@
+import { usersArray } from "./constants.mjs";
+
 const idReslover = (request, response, next) => {
     const {
       params: { id },
