@@ -1,5 +1,6 @@
 import express, { request, response } from "express";
 import { query, validationResult, matchedData, body } from "express-validator";
+import { usersArray } from "./utils/constants.mjs";
 const app = express();
 const port = process.env.port || 3000;
 app.use(express.json());
@@ -7,19 +8,6 @@ app.use(express.json());
 app.get("/", (request, response) => {
   response.send("hello woorld ");
 });
-const usersArray = [
-  {
-    id: 1,
-    name: "safi",
-    work: "freelance",
-  },
-  {
-    id: 2,
-    name: "noor",
-    work: "dev",
-  },
-];
-
 const idReslover = (request, response, next) => {
   const {
     params: { id },
