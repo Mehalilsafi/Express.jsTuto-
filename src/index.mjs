@@ -9,7 +9,7 @@ app.use(cookieParser())
 app.use(userRouter);
 app.use(product);
 app.get("/",(request,response)=>{
-  request.cookies()
+  response.cookie('hello','world',{maxAge:60000})
   response.send({msg:"hello world"})
 })
 app.listen(port, () => {
