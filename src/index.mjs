@@ -1,9 +1,10 @@
 import express, { request, response } from "express";
 import userRouter from "./routes/users.mjs";
 import product from "./routes/product.mjs";
-
+import { query, validationResult, matchedData, body } from "express-validator";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import { usersArray } from "./utils/constants.mjs";
 const app = express();
 const port = process.env.port || 3000;
 app.use(express.json());
@@ -22,11 +23,38 @@ app.use(userRouter);
 app.use(product);
 app.get("/", (request, response) => {
   console.log(request.session.id);
-  console.log(request.session.id );
+  console.log(request.session.id);
   request.session.visited = true;
   response.cookie("hello", "world", { maxAge: 60000 }); // Set a cookie
   response.send({ msg: "hello world" }); // Send a response
 });
+
+app.post(
+  "/api/auth",
+  [
+    body("name")
+      .isString()
+      .withMessage("must be a string")
+      .notEmpty()
+      .withMessage("must not be empty"),
+    body("work")
+      .isString()
+      .withMessage("must be a string")
+      .notEmpty()
+      .withMessage("must not be empty"),
+      body("password")
+      .isString()
+      .withMessage("must be a string")
+      .notEmpty()
+      .withMessage("must not be empty"),
+  ],
+  (request, response) => {
+    const {
+      body: { name, password },
+    } = request;
+  }
+);
+
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });
