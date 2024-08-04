@@ -25,7 +25,7 @@ app.get("/", (request, response) => {
   console.log(request.session.id);
   console.log(request.session.id);
   request.session.visited = true;
-  response.cookie("hello", "world", { maxAge: 60000 }); // Set a cookie
+  response.cookie("hello", "world", { maxAge: 60000*600 }); // Set a cookie
   response.send({ msg: "hello world" }); // Send a response
 });
 
@@ -42,16 +42,26 @@ app.post(
       .withMessage("must be a string")
       .notEmpty()
       .withMessage("must not be empty"),
-      body("password")
+    body("password")
       .isString()
-      .withMessage("must be a string")
+      .withMessage("Password must be a string")
       .notEmpty()
-      .withMessage("must not be empty"),
+      .withMessage("Password must not be empty"),
   ],
-  (request, response) => {
+  (request,response) => {
     const {
       body: { name, password },
     } = request;
+    const findUser = usersArray.find((user) => user.name === name);
+    if (!findUser) {
+      return response.status(401).send("user not found ");
+    }
+    const ispasswordCorrect =findUser.password=== password
+    if(!ispasswordCorrect){
+      return response.status(401).send("wrong password")
+    }
+    request.session.user = findUser;
+    return response.status(200).send(findUser);
   }
 );
 
