@@ -64,7 +64,9 @@ app.post(
     return response.status(200).send(findUser);
   }
 );
-
+app.get("/api/auth/status",(request,response)=>{
+  return  request.session.user ? response.status(200).send(request.session.user):response.status(401).send("wrong information")
+})
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });
