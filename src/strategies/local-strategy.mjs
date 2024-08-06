@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { usersArray } from "../utils/constants.mjs";
 
-//The serializeUser function decides what part of the user object should be stored in the session. In this case, you're storing the user's id.
+//The serializeUser function decides what part of the user object should be stored in the session. and take the validat userObject from the local stratgy
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -15,6 +15,7 @@ passport.deserializeUser((id, done) => {
   } catch (err) {
     done(err, null);
   }
+  //At this point, Passport adds this full user object to request.user.
 });
 
 export default passport.use(

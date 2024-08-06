@@ -5,9 +5,16 @@ import { query, validationResult, matchedData, body } from "express-validator";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import { usersArray } from "./utils/constants.mjs";
+import mongoose from "mongoose";
 import passport from "passport";
 import passportStratigy from "./strategies/local-strategy.mjs";
+
 const app = express();
+mongoose
+  .connect("mongodb://localhost/express_toturial")
+  .then(() => console.log("connect to database "))
+  .catch((err) => console.log(`Error: ${err}`));
+
 const port = process.env.port || 3000;
 app.use(express.json());
 app.use(cookieParser());
@@ -29,10 +36,10 @@ app.post(
   "/api/auth",
   passportStratigy.authenticate("local"),
   (request, response) => {
-    console.log("user print :")
-    console.log(request.user)
-    console.log("session print :")
-    console.log(request.session)
+    console.log("user print :");
+    console.log(request.user);
+    console.log("session print :");
+    console.log(request.session);
     response.sendStatus(200);
   }
 );
@@ -41,7 +48,7 @@ app.post("/api/auth/logout", (request, response) => {
 
   request.logout((err) => {
     if (err) return response.sendStatus(401);
-    return response.sendStatus(200); 
+    return response.sendStatus(200);
   });
 });
 
