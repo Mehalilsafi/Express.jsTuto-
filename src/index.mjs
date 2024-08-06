@@ -28,8 +28,22 @@ app.use(product);
 app.post(
   "/api/auth",
   passportStratigy.authenticate("local"),
-  (request, response) => {}
+  (request, response) => {
+    console.log("user print :")
+    console.log(request.user)
+    console.log("session print :")
+    console.log(request.session)
+    response.sendStatus(200);
+  }
 );
+app.post("/api/auth/logout", (request, response) => {
+  if (!request.user) return response.sendStatus(401);
+
+  request.logout((err) => {
+    if (err) return response.sendStatus(401);
+    return response.sendStatus(200); 
+  });
+});
 
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
@@ -42,4 +56,3 @@ app.listen(port, () => {
 // Remember, HTTP is stateless, meaning each request is independent of others.
 // When you set req.session.visited = true, it stores this information in the session object on the first visit.
 // On subsequent requests, the same session ID (from the cookie) is sent, allowing the server to retrieve and maintain the session state.
-
