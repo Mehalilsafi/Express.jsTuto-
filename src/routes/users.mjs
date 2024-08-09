@@ -2,6 +2,7 @@ import { Router } from "express";
 import { usersArray } from "../utils/constants.mjs";
 import { idResolver } from "../utils/middlewares.mjs";
 import { query, validationResult, matchedData, body } from "express-validator";
+import { User } from "../mongoose/schemas/user.mjs";
 const router = Router();
 
 // the query paramters
@@ -39,33 +40,18 @@ router.get(
 // post requests
 router.post(
   "/api/users",
-  [
-    body("name")
-      .isString()
-      .withMessage("must be a string")
-      .notEmpty()
-      .withMessage("must not be empty"),
-    body("work")
-      .isString()
-      .withMessage("must be a string")
-      .notEmpty()
-      .withMessage("must not be empty"),
-  ],
-  (request, response) => {
-    const errors = validationResult(request);
-    if (!errors.isEmpty()) {
-      return response.status(400).send({ errors: errors.array() });
-    }
-    const data = matchedData(request);
+  async (request, response) => {
+    const { userName, password, displayName } = request.body; // Destructure fields from req.body
 
-    const newId =
-      usersArray.length > 0 ? usersArray[usersArray.length - 1].id + 1 : 1;
-    const newUser = {
-      id: newId,
-      ...data,
-    };
-    usersArray.push(newUser);
-    response.status(201).send(usersArray);
+    // Create a new user instance
+    const newUser = new User({ userName, password, displayName });
+    try {
+      const savedUser = await newUser.save();
+       return response.status(201).send(savedUser);
+    } catch (err) {
+      console.log(`errror for faild creat User:${err}`);
+      return response.sendStatus(400);
+    }
   }
 );
 router.get("/api/users/:id", (request, response) => {

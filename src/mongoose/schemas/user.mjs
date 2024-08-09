@@ -6,10 +6,10 @@ const userSchema=mongoose.Schema({
         required:true,
         uniqe:true
     },
-    displayName:mongoose.Schema.Types.String?
+    displayName:mongoose.Schema.Types.String,
     password:{
         type:mongoose.Schema.Types.String,
         required:true,
     },
 })
-export const user=mongoose.model("user",userSchema)
+export const User =mongoose.model("user",userSchema)
