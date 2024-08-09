@@ -11,7 +11,7 @@ import passportStratigy from "./strategies/local-strategy.mjs";
 
 const app = express();
 mongoose
-  .connect("mongodb://localhost/express-tut")
+  .connect("mongodb://127.0.0.1:27017/express-tut")
   .then(() => console.log("connect to database "))
   .catch((err) => console.log(`Error: ${err}`));
 
@@ -24,7 +24,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
-       maxAge: 60000 * 60, // 1 hour
+      maxAge: 60000 * 60, // 1 hour
     },
   })
 );
