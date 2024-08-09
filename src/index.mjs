@@ -16,7 +16,7 @@ mongoose
   .catch((err) => console.log(`Error: ${err}`));
 
 const port = process.env.port || 3000;
-app.use(express.json());
+app.use(express.json()); 
 app.use(cookieParser());
 app.use(
   session({
