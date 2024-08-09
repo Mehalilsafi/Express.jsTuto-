@@ -11,7 +11,7 @@ import passportStratigy from "./strategies/local-strategy.mjs";
 
 const app = express();
 mongoose
-  .connect("mongodb://localhost:27017/")
+  .connect("mongodb://localhost/express-tut")
   .then(() => console.log("connect to database "))
   .catch((err) => console.log(`Error: ${err}`));
 
