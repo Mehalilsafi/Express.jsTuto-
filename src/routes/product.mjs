@@ -1,5 +1,6 @@
 import {  Router } from "express";
 const router=Router()
+import { Product } from "../mongoose/schemas/product.mjs";
 
 router.get("/api/products",(request, response)=>{
   console.log(request.cookies)
