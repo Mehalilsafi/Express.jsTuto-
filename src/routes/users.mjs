@@ -3,6 +3,7 @@ import { usersArray } from "../utils/constants.mjs";
 import { idResolver } from "../utils/middlewares.mjs";
 import { query, validationResult, matchedData, body } from "express-validator";
 import { User } from "../mongoose/schemas/user.mjs";
+import { hashPassword, hashPassword } from "../utils/helpers.mjs";
 const router = Router();
 
 // the query paramters
@@ -42,9 +43,9 @@ router.post(
   "/api/users",
   async (request, response) => {
     const { userName, password, displayName } = request.body; // Destructure fields from req.body
-
+   const hashPassword=hashPassword(password)
     // Create a new user instance
-    const newUser = new User({ userName, password, displayName });
+    const newUser = new User({ userName, hashPassword, displayName });
     try {
       const savedUser = await newUser.save();
        return response.status(201).send(savedUser);
