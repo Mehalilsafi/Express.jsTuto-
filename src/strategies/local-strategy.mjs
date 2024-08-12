@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { usersArray } from "../utils/constants.mjs";
 import { User } from "../mongoose/schemas/user.mjs";
+import { comparePassword } from "../utils/helpers.mjs";
 //The serializeUser function decides what part of the user object should be stored in the session. and take the validat userObject from the local stratgy
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -23,7 +24,7 @@ export default passport.use(
     try {
       const findUser = await User.findne({ userName });
       if (!findUser) throw new Error("user not found");
-      if (findUser.password !== password) throw new Error("incrrect password");
+      if (comparePassword(password,findUser.password)) throw new Error("incrrect password");
       done(null, findUser);
     } catch (err) {
       done(err, null);
