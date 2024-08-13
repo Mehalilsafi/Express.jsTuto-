@@ -7,6 +7,7 @@ import session from "express-session";
 import { usersArray } from "./utils/constants.mjs";
 import mongoose from "mongoose";
 import passport from "passport";
+import MongoStore from 'connect-mongo'
 import passportStratigy from "./strategies/local-strategy.mjs";
 
 const app = express();
@@ -26,6 +27,9 @@ app.use(
     cookie: {
       maxAge: 60000 * 60, // 1 hour
     },
+    store:MongoStore.create({
+      client:mongoose.Connection.getClient()
+    })
   })
 );
 app.use(passport.initialize());
