@@ -27,15 +27,14 @@ app.use(
     cookie: {
       maxAge: 60000 * 60, // 1 hour
     },
-    store:MongoStore.create({
-      client:mongoose.Connection.getClient()
-    })
+  
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(userRouter);
 app.use(product);
+
 app.post(
   "/api/auth",
   passportStratigy.authenticate("local"),
